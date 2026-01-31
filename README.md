@@ -13,12 +13,14 @@ pip install -r requirements.txt
 
 ## Usage
 ```bash
+venv\Scripts\activate
+pip install -r requirements.txt
 python src/main.py --server-type <server_type> --server-version <server_version> --xmx <xmx> --xms <xms>
 ```
 
 ### Arguments
-- `--server-type`: The type of server to create. (choices: `vanilla`, `plugins`, `mods`)
-- `--server-version`: The version of the Minecraft server to install.
+- `--server-type`: Type of server to create. (choices: `vanilla`, `plugins`, `mods`)
+- `--server-version`: Version of the Minecraft server to install.
 - `--xmx`: Maximum memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 - `--xms`: Initial memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 

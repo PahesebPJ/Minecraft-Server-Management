@@ -21,22 +21,6 @@ def get_operating_system():
     else:
         return os_name
 
-def check_java():
-    try:
-        subprocess.run(["java", "-version"], check=True, capture_output=True, text=True)
-        print("Java is installed.")
-        return "installed"
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("Java is not installed.")
-        while True:
-            choice = input("Do you want to download Java? (y/n): ").lower()
-            if choice in ["y", "yes"]:
-                return "download"
-            elif choice in ["n", "no"]:
-                return "abort"
-            else:
-                print("Invalid choice. Please enter 'y' or 'n'.")
-
 def accept_eula(server_dir):
     eula_path = os.path.join(server_dir, "eula.txt")
     try:

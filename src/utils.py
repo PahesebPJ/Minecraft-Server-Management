@@ -1,5 +1,4 @@
 import platform
-import subprocess
 import os
 
 def confirm_action(message):

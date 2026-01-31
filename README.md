@@ -4,6 +4,7 @@ This tool helps you to automatically create a Minecraft server.
 
 ## Requirements
 - Python 3.6+
+- Java 17 or higher (Optional)
 
 ## Installation
 ```bash
@@ -12,7 +13,7 @@ pip install -r requirements.txt
 
 ## Usage
 ```bash
-python src/main.py --server-type <server_type> --server-version <server_version>
+python src/main.py --server-type <server_type> --server-version <server_version> --xmx <xmx> --xms <xms>
 ```
 
 ### Arguments
@@ -24,7 +25,5 @@ python src/main.py --server-type <server_type> --server-version <server_version>
 ### Java
 If Java is not installed, the tool will prompt you to download it. You will be asked to enter the desired Java version (e.g., 17, 18). The tool will then download and extract the JDK from [Adoptium](https://adoptium.net/).
 
-### Example
-```bash
-python src/main.py --server-type vanilla --server-version 1.18.2
-```
+### Notes
+- The tool will ask for confirmation before performing major actions like downloading files or running the server.

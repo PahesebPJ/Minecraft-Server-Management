@@ -3,8 +3,7 @@ import shutil
 import subprocess
 from cli import parse_args
 from downloader import download_file, get_vanilla_download_url
-from utils import confirm_action, get_operating_system, accept_eula
-from server import configure_server_properties # Still useful for initial server.properties handling (outside of docker)
+from utils import confirm_action, get_operating_system
 
 def main():
     args = parse_args()

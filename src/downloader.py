@@ -1,7 +1,4 @@
 import requests
-import os
-import shutil
-import tarfile
 
 def download_file(url, file_path):
     print(f"Downloading {url} to {file_path}...")

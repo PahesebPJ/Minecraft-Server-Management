@@ -19,14 +19,3 @@ def get_operating_system():
         return "linux"
     else:
         return os_name
-
-def accept_eula(server_dir):
-    eula_path = os.path.join(server_dir, "eula.txt")
-    try:
-        with open(eula_path, "r") as f:
-            content = f.read()
-        with open(eula_path, "w") as f:
-            f.write(content.replace("eula=false", "eula=true"))
-        print("EULA accepted.")
-    except FileNotFoundError:
-        print("eula.txt not found. The server may not have been run yet.")

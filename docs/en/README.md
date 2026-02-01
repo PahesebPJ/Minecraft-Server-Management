@@ -41,7 +41,15 @@ The tool's workflow is orchestrated by the main Python script (`src/main.py`) an
 -   `docs/`: Contains all project documentation.
 -   `src/`: Contains the Python source code, organized into modules:
     -   `main.py`: The main entry point of the application. It orchestrates the entire process from user input to running the Docker container.
-    -   `cli.py`: Defines the command-line interface, including all available arguments.
-    -   `downloader.py`: Contains functions for downloading files, such as the Minecraft server JAR.
-    -   `server.py`: Contains functions related to server configuration.
-    -   `utils.py`: A collection of helper functions used across the application.
+        - `cli.py`: Defines the command-line interface, including all available arguments.
+        - `downloader.py`: Contains functions for downloading files, such as the Minecraft server JAR.
+        - `server.py`: Contains functions related to server configuration.
+        - `utils.py`: A collection of helper functions used across the application.
+    
+    ### Command-Line Arguments
+    - `--server-type`: The type of server to create. (choices: `vanilla`, `plugins`, `mods`)
+    - `--server-version`: The version of the Minecraft server to install.
+    - `--server-name`: Optional name for the server container and volume. Defaults to `mc-server-<version>`.
+    - `--xmx`: Maximum memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
+    - `--xms`: Initial memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
+    

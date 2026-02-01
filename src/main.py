@@ -15,7 +15,7 @@ def main():
     print(f"Server Type: {args.server_type}")
     print(f"Server Version: {args.server_version}")
     
-    server_name = f"mc-server-{args.server_version}"
+    server_name = args.server_name if args.server_name else f"mc-server-{args.server_version}"
     server_data_volume = f"{server_name}-data"
     image_name = f"minecraft-{args.server_type}-server:{args.server_version}"
 
@@ -77,7 +77,6 @@ def main():
             if os.path.exists(build_context_dir):
                 shutil.rmtree(build_context_dir)
                 print(f"Cleaned up temporary build context: {build_context_dir}")
-
     elif args.server_type == "plugins":
         print("Plugin server setup with Docker not implemented yet.")
     elif args.server_type == "mods":

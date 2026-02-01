@@ -23,6 +23,7 @@ python src/main.py --server-type <server_type> --server-version <server_version>
 ### Arguments
 - `--server-type`: The type of server to create. (choices: `vanilla`, `plugins`, `mods`)
 - `--server-version`: The version of the Minecraft server to install.
+- `--server-name`: Optional name for the server container and volume. Defaults to `mc-server-<version>`.
 - `--xmx`: Maximum memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 - `--xms`: Initial memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 

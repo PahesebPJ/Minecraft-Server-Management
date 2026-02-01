@@ -41,7 +41,15 @@ El flujo de trabajo de la herramienta está orquestado por el script principal d
 -   `docs/`: Contiene toda la documentación del proyecto.
 -   `src/`: Contiene el código fuente de Python, organizado en módulos:
     -   `main.py`: El punto de entrada principal de la aplicación. Orquesta todo el proceso, desde la entrada del usuario hasta la ejecución del contenedor de Docker.
-    -   `cli.py`: Define la interfaz de línea de comandos, incluidos todos los argumentos disponibles.
-    -   `downloader.py`: Contiene funciones para descargar archivos, como el JAR del servidor de Minecraft.
-    -   `server.py`: Contiene funciones relacionadas con la configuración del servidor.
-    -   `utils.py`: Una colección de funciones de ayuda utilizadas en toda la aplicación.
+        - `cli.py`: Define la interfaz de línea de comandos, incluidos todos los argumentos disponibles.
+        - `downloader.py`: Contiene funciones para descargar archivos, como el JAR del servidor de Minecraft.
+        - `server.py`: Contiene funciones relacionadas con la configuración del servidor.
+        - `utils.py`: Una colección de funciones de ayuda utilizadas en toda la aplicación.
+    
+    ### Argumentos de Línea de Comandos
+    - `--server-type`: El tipo de servidor a crear. (opciones: `vanilla`, `plugins`, `mods`)
+    - `--server-version`: La versión del servidor de Minecraft a instalar.
+    - `--server-name`: Nombre opcional para el contenedor y el volumen del servidor. Por defecto es `mc-server-<version>`.
+    - `--xmx`: Asignación máxima de memoria para el servidor (p. ej., 1024M, 2G). Por defecto: 1024M.
+    - `--xms`: Asignación inicial de memoria para el servidor (p. ej., 1024M, 2G). Por defecto: 1024M.
+    

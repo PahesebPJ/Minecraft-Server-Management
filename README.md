@@ -2,9 +2,9 @@
 
 This tool helps you to automatically create and manage a Minecraft server using Docker.
 
-For detailed documentation on how the project works, please see the [documentation here](./docs/ENG/README.md).
+For detailed documentation on how the project works, please see the [documentation here](./docs/en/README.md).
 
-Para la documentación detallada en español, por favor vea la [documentación aquí](./docs/SPA/README.md).
+Para la documentación detallada en español, por favor vea la [documentación aquí](./docs/es/README.md).
 
 ## Requirements
 - Python 3.6+

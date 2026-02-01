@@ -1,5 +1,4 @@
 import platform
-import os
 
 def confirm_action(message):
     while True:

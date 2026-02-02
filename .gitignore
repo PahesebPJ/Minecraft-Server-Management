@@ -1,3 +1,7 @@
 venv
 __pycache__
 mc-server-*/
+docker_build_context/
+*.pyc
+.DS_Store
+*.log

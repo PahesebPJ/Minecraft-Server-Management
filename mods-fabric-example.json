@@ -1,0 +1,21 @@
+{
+    "mod_loader": "fabric",
+    "minecraft_version": "1.21.1",
+    "mods": [
+        {
+            "platform": "modrinth",
+            "slug": "fabric-api",
+            "version": "latest"
+        },
+        {
+            "platform": "modrinth",
+            "slug": "sodium",
+            "version": "latest"
+        },
+        {
+            "platform": "modrinth",
+            "slug": "lithium",
+            "version": "latest"
+        }
+    ]
+}

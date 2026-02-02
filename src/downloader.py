@@ -33,3 +33,84 @@ def get_vanilla_download_url(version):
     except requests.exceptions.RequestException as e:
         print(f"Error getting download URL: {e}")
         return None
+
+
+def download_mods_from_config(config, output_dir, cf_api_key=None):
+    """
+    Download all mods specified in a mod configuration.
+    
+    Args:
+        config: ModConfig object containing mod specifications
+        output_dir: Directory to save downloaded mods
+        cf_api_key: Optional CurseForge API key for CurseForge downloads
+    
+    Returns:
+        List of successfully downloaded mod file paths
+    """
+    from mod_platforms import ModrinthClient, CurseForgeClient
+    import os
+    
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Initialize clients
+    modrinth_client = ModrinthClient()
+    curseforge_client = None
+    
+    if cf_api_key:
+        try:
+            curseforge_client = CurseForgeClient(cf_api_key)
+        except ValueError as e:
+            print(f"Warning: {e}")
+    
+    downloaded_mods = []
+    failed_mods = []
+    
+    print(f"\nDownloading {len(config.mods)} mod(s)...")
+    
+    for idx, mod in enumerate(config.mods, 1):
+        print(f"\n[{idx}/{len(config.mods)}] Processing {mod.slug}...")
+        
+        try:
+            if mod.platform == "modrinth":
+                mod_path = modrinth_client.download_mod(
+                    mod.slug,
+                    config.minecraft_version,
+                    config.mod_loader,
+                    output_dir
+                )
+                if mod_path:
+                    downloaded_mods.append(mod_path)
+                else:
+                    failed_mods.append(mod.slug)
+            
+            elif mod.platform == "curseforge":
+                if not curseforge_client:
+                    print(f"Skipping {mod.slug}: CurseForge API key not provided")
+                    failed_mods.append(mod.slug)
+                    continue
+                
+                mod_path = curseforge_client.download_mod(
+                    mod.slug,
+                    config.minecraft_version,
+                    config.mod_loader,
+                    output_dir
+                )
+                if mod_path:
+                    downloaded_mods.append(mod_path)
+                else:
+                    failed_mods.append(mod.slug)
+        
+        except Exception as e:
+            print(f"Error downloading {mod.slug}: {e}")
+            failed_mods.append(mod.slug)
+    
+    # Summary
+    print(f"\n{'='*50}")
+    print(f"Download Summary:")
+    print(f"  Successfully downloaded: {len(downloaded_mods)} mod(s)")
+    if failed_mods:
+        print(f"  Failed: {len(failed_mods)} mod(s)")
+        print(f"  Failed mods: {', '.join(failed_mods)}")
+    print(f"{'='*50}\n")
+    
+    return downloaded_mods

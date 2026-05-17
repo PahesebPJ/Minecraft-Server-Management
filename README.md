@@ -23,9 +23,9 @@ pip install -r requirements.txt
 python src/main.py --server-type vanilla --server-version <version> --xmx <max_memory> --xms <initial_memory>
 ```
 
-### Modded Server (Forge/Fabric)
+### Modded Server (Forge/Fabric/NeoForge)
 ```bash
-python src/main.py --server-type mods --server-version <version> --mod-loader <forge|fabric> --mod-config <path_to_mods.json> --xmx <max_memory> --xms <initial_memory>
+python src/main.py --server-type mods --server-version <version> --mod-loader <forge|fabric|neoforge> --mod-config <path_to_mods.json> --xmx <max_memory> --xms <initial_memory>
 ```
 
 ### Arguments
@@ -36,7 +36,7 @@ python src/main.py --server-type mods --server-version <version> --mod-loader <f
 - `--xms`: Initial memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 
 #### Modded Server Arguments
-- `--mod-loader`: Mod loader type (required for `--server-type mods`). Choices: `forge`, `fabric`.
+- `--mod-loader`: Mod loader type (required for `--server-type mods`). Choices: `forge`, `fabric`, `neoforge`.
 - `--mod-config`: Path to mod configuration JSON file (optional). See [Mod Configuration](#mod-configuration) below.
 - `--curseforge-api-key`: CurseForge API key for downloading CurseForge mods. Can also be set via `CF_API_KEY` environment variable.
 
@@ -66,7 +66,7 @@ For modded servers, you can specify mods to download automatically using a JSON 
 ```
 
 ### Fields
-- `mod_loader`: Must match the `--mod-loader` argument (`forge` or `fabric`)
+- `mod_loader`: Must match the `--mod-loader` argument (`forge`, `fabric`, or `neoforge`)
 - `minecraft_version`: Minecraft version (should match `--server-version`)
 - `mods`: Array of mod specifications
   - `platform`: `modrinth` or `curseforge`
@@ -112,6 +112,18 @@ python src/main.py --server-type mods --server-version 1.21.1 --mod-loader fabri
 
 This will create a Fabric server with only Fabric API (no additional mods).
 
+### NeoForge Server with Mods
+```bash
+python src/main.py --server-type mods --server-version 1.21.1 --mod-loader neoforge --mod-config mods-neoforge-example.json --xmx 2G --xms 2G
+```
+
+This will:
+1. Automatically find the latest NeoForge version for Minecraft 1.21.1
+2. Download and install the NeoForge server
+3. Download mods specified in `mods-neoforge-example.json` from Modrinth
+4. Build a Docker image with the server and mods
+5. Start a Docker container with 2GB RAM
+
 ## Managing Your Server
 
 After starting a server, you can manage it with these Docker commands:
@@ -140,3 +152,5 @@ docker volume rm <server-name>-data
 - The tool will ask for confirmation before performing major actions like downloading files or building/running Docker containers.
 - Server data is persisted in Docker volumes, so it survives container restarts.
 - For Fabric servers, Fabric API is automatically downloaded as it's required by most Fabric mods.
+- NeoForge versions are automatically resolved from the Minecraft version (e.g., MC 1.21.1 → NeoForge 21.1.x).
+- NeoForge is the modern successor to Forge (available since MC 1.20.2+). For older Minecraft versions, use Forge instead.

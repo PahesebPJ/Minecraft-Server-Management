@@ -83,7 +83,7 @@ def main():
         # Validate mod loader is specified
         if not args.mod_loader:
             print("Error: --mod-loader is required when --server-type is 'mods'")
-            print("Please specify either 'forge' or 'fabric'")
+            print("Please specify 'forge', 'fabric', or 'neoforge'")
             return
         
         if not confirm_action(f"Do you want to set up a {args.mod_loader.capitalize()} modded Minecraft server version {args.server_version} with Docker?"):
@@ -95,11 +95,13 @@ def main():
         
         try:
             # 2. Install mod loader
-            from mod_loaders import install_forge_server, install_fabric_server, get_mod_loader_type
+            from mod_loaders import install_forge_server, install_fabric_server, install_neoforge_server, get_mod_loader_type
             
             print(f"\nInstalling {args.mod_loader.capitalize()} server...")
             if args.mod_loader == "forge":
                 server_jar = install_forge_server(args.server_version, build_context_dir)
+            elif args.mod_loader == "neoforge":
+                server_jar = install_neoforge_server(args.server_version, build_context_dir)
             else:  # fabric
                 server_jar = install_fabric_server(args.server_version, build_context_dir)
             

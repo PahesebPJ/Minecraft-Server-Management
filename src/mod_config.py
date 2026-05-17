@@ -28,8 +28,8 @@ class ModConfig:
     
     def __post_init__(self):
         """Validate configuration fields."""
-        if self.mod_loader not in ['forge', 'fabric']:
-            raise ValueError(f"Invalid mod loader: {self.mod_loader}. Must be 'forge' or 'fabric'")
+        if self.mod_loader not in ['forge', 'fabric', 'neoforge']:
+            raise ValueError(f"Invalid mod loader: {self.mod_loader}. Must be 'forge', 'fabric', or 'neoforge'")
         if not self.minecraft_version:
             raise ValueError("Minecraft version cannot be empty")
 
@@ -156,7 +156,15 @@ def create_example_config(output_path: str, mod_loader: str = "fabric", minecraf
                 "version": "latest"
             }
         ]
-    else:  # forge
+    elif mod_loader == "forge":
+        example_mods = [
+            {
+                "platform": "modrinth",
+                "slug": "jei",
+                "version": "latest"
+            }
+        ]
+    else:  # neoforge
         example_mods = [
             {
                 "platform": "modrinth",

@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import requests
 from typing import Optional
@@ -43,6 +44,77 @@ def get_forge_installer_url(minecraft_version: str) -> Optional[str]:
     
     except Exception as e:
         print(f"Error getting Forge installer URL: {e}")
+        return None
+
+
+def get_neoforge_installer_url(minecraft_version: str) -> Optional[str]:
+    """
+    Get the NeoForge installer download URL for a specific Minecraft version.
+    
+    NeoForge versions follow the pattern MinecraftMinor.MinecraftPatch.BuildNumber
+    (e.g., 21.1.77 for MC 1.21.1). This function queries the Maven metadata
+    to find the latest matching version automatically.
+    
+    Args:
+        minecraft_version: Minecraft version (e.g., '1.21.1')
+    
+    Returns:
+        NeoForge installer URL or None if not found
+    """
+    try:
+        # Parse Minecraft version to determine NeoForge version prefix
+        # MC 1.X.Y -> NeoForge prefix X.Y.
+        mc_parts = minecraft_version.split('.')
+        if len(mc_parts) < 2:
+            print(f"Invalid Minecraft version format: {minecraft_version}")
+            return None
+        
+        mc_minor = mc_parts[1]  # e.g., '21' from '1.21.1'
+        mc_patch = mc_parts[2] if len(mc_parts) >= 3 else '0'  # e.g., '1' from '1.21.1'
+        neoforge_prefix = f"{mc_minor}.{mc_patch}."  # e.g., '21.1.'
+        
+        print(f"Looking for NeoForge versions matching prefix {neoforge_prefix}...")
+        
+        # Fetch Maven metadata to get all available versions
+        metadata_url = "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml"
+        response = requests.get(metadata_url)
+        response.raise_for_status()
+        
+        # Parse versions from XML (simple regex approach, no XML dependency needed)
+        versions = re.findall(r'<version>([^<]+)</version>', response.text)
+        
+        # Filter versions matching our prefix
+        matching_versions = [v for v in versions if v.startswith(neoforge_prefix)]
+        
+        if not matching_versions:
+            print(f"No NeoForge version found for Minecraft {minecraft_version}")
+            return None
+        
+        # Prefer stable (non-beta) versions, then pick the latest
+        stable_versions = [v for v in matching_versions if 'beta' not in v]
+        if stable_versions:
+            # Sort by build number (the part after the prefix)
+            stable_versions.sort(key=lambda v: int(v.replace(neoforge_prefix, '').split('-')[0]), reverse=True)
+            neoforge_version = stable_versions[0]
+        else:
+            # Fallback to latest beta
+            matching_versions.sort(
+                key=lambda v: int(v.replace(neoforge_prefix, '').split('-')[0]), reverse=True
+            )
+            neoforge_version = matching_versions[0]
+        
+        print(f"Found NeoForge version: {neoforge_version}")
+        
+        # Construct download URL
+        installer_url = (
+            f"https://maven.neoforged.net/releases/net/neoforged/neoforge/"
+            f"{neoforge_version}/neoforge-{neoforge_version}-installer.jar"
+        )
+        
+        return installer_url
+    
+    except Exception as e:
+        print(f"Error getting NeoForge installer URL: {e}")
         return None
 
 
@@ -224,6 +296,93 @@ def install_fabric_server(minecraft_version: str, build_context_dir: str) -> Opt
         return None
 
 
+def install_neoforge_server(minecraft_version: str, build_context_dir: str) -> Optional[str]:
+    """
+    Download and install NeoForge server.
+    
+    NeoForge follows the same installation pattern as Forge:
+    download installer JAR, run with --installServer, produces run.sh/run.bat.
+    
+    Args:
+        minecraft_version: Minecraft version
+        build_context_dir: Directory to install server files
+    
+    Returns:
+        Path to server marker or None if failed
+    """
+    print(f"Installing NeoForge server for Minecraft {minecraft_version}...")
+    
+    # Get installer URL
+    installer_url = get_neoforge_installer_url(minecraft_version)
+    if not installer_url:
+        return None
+    
+    # Download installer
+    installer_path = os.path.join(build_context_dir, "neoforge-installer.jar")
+    if not download_file(installer_url, installer_path):
+        print("Failed to download NeoForge installer")
+        return None
+    
+    # Run installer (same as Forge: java -jar installer.jar --installServer)
+    print("Running NeoForge installer (this may take a few minutes)...")
+    try:
+        install_command = [
+            "java",
+            "-jar",
+            installer_path,
+            "--installServer"
+        ]
+        
+        result = subprocess.run(
+            install_command,
+            cwd=build_context_dir,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
+        print("NeoForge installer completed successfully")
+        
+        # Clean up installer
+        if os.path.exists(installer_path):
+            os.remove(installer_path)
+        
+        # NeoForge produces run.sh/run.bat (like newer Forge)
+        if os.path.exists(os.path.join(build_context_dir, "run.sh")) or \
+           os.path.exists(os.path.join(build_context_dir, "run.bat")):
+            print("NeoForge server installed with run scripts")
+            # Create a marker so the entrypoint can identify NeoForge
+            marker_path = os.path.join(build_context_dir, "NEOFORGE_MARKER")
+            with open(marker_path, "w") as f:
+                f.write("true")
+            # Also create USE_RUN_SCRIPT for compatibility
+            use_run_path = os.path.join(build_context_dir, "USE_RUN_SCRIPT")
+            with open(use_run_path, "w") as f:
+                f.write("true")
+            return marker_path
+        
+        # Fallback: check for neoforge JAR
+        for file in os.listdir(build_context_dir):
+            if file.startswith("neoforge") and file.endswith(".jar") and "installer" not in file:
+                server_jar_path = os.path.join(build_context_dir, file)
+                final_path = os.path.join(build_context_dir, "server.jar")
+                os.rename(server_jar_path, final_path)
+                print(f"NeoForge server JAR ready: server.jar")
+                return final_path
+        
+        print("Could not find NeoForge server files after installation")
+        return None
+    
+    except subprocess.CalledProcessError as e:
+        print(f"NeoForge installer failed: {e}")
+        print(f"Stdout: {e.stdout}")
+        print(f"Stderr: {e.stderr}")
+        return None
+    except Exception as e:
+        print(f"Error running NeoForge installer: {e}")
+        return None
+
+
 def get_mod_loader_type(build_context_dir: str) -> str:
     """
     Detect which mod loader is installed in the build context.
@@ -232,10 +391,12 @@ def get_mod_loader_type(build_context_dir: str) -> str:
         build_context_dir: Directory containing server files
     
     Returns:
-        'fabric', 'forge', or 'unknown'
+        'fabric', 'neoforge', 'forge', or 'unknown'
     """
     if os.path.exists(os.path.join(build_context_dir, "fabric-server-launch.jar")):
         return "fabric"
+    elif os.path.exists(os.path.join(build_context_dir, "NEOFORGE_MARKER")):
+        return "neoforge"
     elif os.path.exists(os.path.join(build_context_dir, "server.jar")):
         return "forge"
     elif os.path.exists(os.path.join(build_context_dir, "USE_RUN_SCRIPT")):

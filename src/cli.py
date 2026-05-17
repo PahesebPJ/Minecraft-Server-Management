@@ -9,7 +9,7 @@ def parse_args():
     parser.add_argument("--xms", default="1024M", help="Initial memory allocation for the server (e.g., 1024M, 2G).")
     
     # Modded server arguments
-    parser.add_argument("--mod-loader", choices=["forge", "fabric"], help="Mod loader type (required for --server-type mods).")
+    parser.add_argument("--mod-loader", choices=["forge", "fabric", "neoforge"], help="Mod loader type (required for --server-type mods).")
     parser.add_argument("--mod-config", help="Path to mod configuration JSON file (optional for --server-type mods).")
     parser.add_argument("--curseforge-api-key", help="CurseForge API key for downloading CurseForge mods.")
     

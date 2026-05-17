@@ -17,8 +17,12 @@ elif [ -f "server.jar" ]; then
     echo "Starting Forge server..."
     SERVER_JAR="server.jar"
 elif [ -f "run.sh" ]; then
-    echo "Starting newer Forge server with run script..."
-    # Newer Forge versions use run.sh
+    # NeoForge and newer Forge versions both produce run.sh
+    if [ -f "NEOFORGE_MARKER" ]; then
+        echo "Starting NeoForge server with run script..."
+    else
+        echo "Starting Forge/NeoForge server with run script..."
+    fi
     chmod +x run.sh
     exec ./run.sh --nogui
 else

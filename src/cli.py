@@ -13,4 +13,7 @@ def parse_args():
     parser.add_argument("--mod-config", help="Path to mod configuration JSON file (optional for --server-type mods).")
     parser.add_argument("--curseforge-api-key", help="CurseForge API key for downloading CurseForge mods.")
     
+    # Gamemode arguments
+    parser.add_argument("--gamemode", choices=['survival', 'creative', 'adventure', 'hardcore'], type=str.lower, help="Gamemode for the server (survival by default)", default="survival")
+    
     return parser.parse_args()

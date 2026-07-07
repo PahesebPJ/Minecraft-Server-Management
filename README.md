@@ -20,12 +20,12 @@ pip install -r requirements.txt
 
 ### Vanilla Server
 ```bash
-python src/main.py --server-type vanilla --server-version <version> --xmx <max_memory> --xms <initial_memory>
+python src/main.py --server-type vanilla --server-version <version> --xmx <max_memory> --xms <initial_memory> --gamemode <gamemode>
 ```
 
 ### Modded Server (Forge/Fabric/NeoForge)
 ```bash
-python src/main.py --server-type mods --server-version <version> --mod-loader <forge|fabric|neoforge> --mod-config <path_to_mods.json> --xmx <max_memory> --xms <initial_memory>
+python src/main.py --server-type mods --server-version <version> --mod-loader <forge|fabric|neoforge> --mod-config <path_to_mods.json> --xmx <max_memory> --xms <initial_memory> --gamemode <gamemode>
 ```
 
 ### Arguments
@@ -34,11 +34,13 @@ python src/main.py --server-type mods --server-version <version> --mod-loader <f
 - `--server-name`: Optional name for the server container and volume. Defaults to `mc-server-<version>`.
 - `--xmx`: Maximum memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
 - `--xms`: Initial memory allocation for the server (e.g., 1024M, 2G). Default: 1024M.
+- `--gamemode`: Gamemode to select (e.g., creative, hardcore). Default: survival
 
 #### Modded Server Arguments
 - `--mod-loader`: Mod loader type (required for `--server-type mods`). Choices: `forge`, `fabric`, `neoforge`.
 - `--mod-config`: Path to mod configuration JSON file (optional). See [Mod Configuration](#mod-configuration) below.
 - `--curseforge-api-key`: CurseForge API key for downloading CurseForge mods. Can also be set via `CF_API_KEY` environment variable.
+- `--gamemode`: Gamemode to select (e.g., creative, hardcore). Default: survival
 
 ## Mod Configuration
 

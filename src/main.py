@@ -18,6 +18,7 @@ def main():
     server_name = args.server_name if args.server_name else f"mc-server-{args.server_version}"
     server_data_volume = f"{server_name}-data"
     image_name = f"minecraft-{args.server_type}-server:{args.server_version}"
+    gamemode = args.gamemode
 
     if args.server_type == "vanilla":
         if not confirm_action(f"Do you want to download the vanilla Minecraft server version {args.server_version} and set it up with Docker?"):
@@ -62,6 +63,7 @@ def main():
                 "-e", "EULA=TRUE", # Accept EULA inside the container
                 "-e", f"XMX={args.xmx}",
                 "-e", f"XMS={args.xms}",
+                "-e", f"MODE={gamemode}",
                 "-v", f"{server_data_volume}:/app", # Mount volume for persistent data
                 image_name
             ]
@@ -181,6 +183,7 @@ def main():
                 "-e", "EULA=TRUE",  # Accept EULA inside the container
                 "-e", f"XMX={args.xmx}",
                 "-e", f"XMS={args.xms}",
+                "-e", f"MODE={gamemode}",
                 "-v", f"{server_data_volume}:/app",  # Mount volume for persistent data
                 image_name
             ]

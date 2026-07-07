@@ -9,5 +9,17 @@ fi
 XMX=${XMX:-1024M}
 XMS=${XMS:-1024M}
 
+# Gamemode selected
+if [ -n "$MODE" ]; then
+    echo "Setting up gamemode: $MODE"
+
+    touch server.properties
+
+    sed -i '/gamemode=/d' server.properties
+
+    echo "gamemode=$MODE" >> server.properties
+
+fi
+
 # Start the Minecraft server
 java -Xmx$XMX -Xms$XMS -jar server.jar nogui
